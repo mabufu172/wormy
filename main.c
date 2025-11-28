@@ -28,11 +28,14 @@ int main(void) {
 
     Vector2 wormPos[(int) maxWormLength];
     Vector2 size = {squareRes, squareRes};
-    wormPos[0] = (Vector2) { 0, 3 };
-    wormPos[1] = (Vector2) { 0, 2 };
-    wormPos[2] = (Vector2) { 0, 1 };
-    wormPos[3] = (Vector2) { 0, 0 };
-    int currentWormLength = 4; // this must be anchored to how many times i did the one i did in line above this
+
+    
+    int currentWormLength = 0;
+    // make this non hard code
+    wormPos[currentWormLength++] = (Vector2) { 0, 3 };
+    wormPos[currentWormLength++] = (Vector2) { 0, 2 };
+    wormPos[currentWormLength++] = (Vector2) { 0, 1 };
+    wormPos[currentWormLength++] = (Vector2) { 0, 0 };
 
     // always draw intial worm state in the very beginning
     for (int i = 0; i < currentWormLength; i++)
@@ -46,28 +49,18 @@ int main(void) {
         if ((IsKeyDown(KEY_W) || IsKeyDown(KEY_A) || IsKeyDown(KEY_S) || IsKeyDown(KEY_D)) && inputDelay == 0) {
 
             if (IsKeyDown(KEY_W)) currentAction = 3;
-
             if (IsKeyDown(KEY_A)) currentAction = 1;
-
             if (IsKeyDown(KEY_S)) currentAction = 4;
-
             if (IsKeyDown(KEY_D)) currentAction = 2;
 
-            // clear previous moves
-            //map[(int)wormPos[currentWormLength].x][(int)wormPos[currentWormLength].y] = 0;
+            for (int i = 0; i < currentWormLength; i++) {
+                // remove previous worm segment
+                map[(int) wormPos[i + 1].x][(int) wormPos[i + 1].y] = 0;
+                
+                // inherit n worm segment to n - 1 worm segment
+                wormPos[currentWormLength - i] = wormPos[(currentWormLength - i) - 1];
+            }
 
-            // remove previous worm segment if we ran out of worm
-            map[(int) wormPos[1].x][(int) wormPos[1].y] = 0;
-            map[(int) wormPos[2].x][(int) wormPos[2].y] = 0;
-            map[(int) wormPos[3].x][(int) wormPos[3].y] = 0;
-            // for (int i = 0; i < currentWormLength; i++) {
-            //     map[(int)wormPos[i].x][(int)wormPos[i].y] = 1;
-            // }
-
-            // inherit head pos to body 1
-            wormPos[3] = wormPos[2];
-            wormPos[2] = wormPos[1];
-            wormPos[1] = wormPos[0];
             // prevent diagonal movements
             switch (currentAction) {
             case 1:
@@ -85,12 +78,8 @@ int main(void) {
             }
 
             // loop thru all worm segments and make it 1 in map (green in render)
-            for (int i = 0; i < currentWormLength; i++) {
-                if (i == 0)
-                map[(int)wormPos[i].x][(int)wormPos[i].y] = 2;
-                else
-                map[(int)wormPos[i].x][(int)wormPos[i].y] = 1;
-            }
+            for (int i = 0; i < currentWormLength; i++)
+            map[(int)wormPos[i].x][(int)wormPos[i].y] = 1;
             
             inputDelay = 15;
         }
@@ -102,13 +91,8 @@ int main(void) {
         // render anything above 0 to be green (worm) for now, objects and blocks might be stored as negatives
         for (int i = 0; i < pixelHeight; i++)
         for (int j = 0; j < pixelWidth; j++)
-        if (map[i][j] > 0) {
-            if (map[i][j] == 2) 
-            DrawRectangle(j * squareRes, i * squareRes, size.x, size.y, DARKGREEN);
-            else
-            DrawRectangle(j * squareRes, i * squareRes, size.x, size.y, GREEN);
-        }
-
+        if (map[i][j] > 0) DrawRectangle(j * squareRes, i * squareRes, size.x, size.y, GREEN);
+        
         EndDrawing();
     }
 
