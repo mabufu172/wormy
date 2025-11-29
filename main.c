@@ -6,7 +6,7 @@ int currentAction = 0;
 // 0 = stationary, 1 = left, 2 = right, 3 = up, 4 = down
 
 int main(void) {
-    const char GAME_NAME[] = "wormy";
+    const char gameName[] = "wormy";
     const float squareRes = 60.0f;
     const int screenWidth = 1920;
     const int screenHeight = 1080;
@@ -21,14 +21,14 @@ int main(void) {
     for (int j = 0; j < pixelWidth; j++)
     map[i][j] = 0;
     
-    InitWindow(screenWidth, screenHeight, GAME_NAME);
+    InitWindow(screenWidth, screenHeight, gameName);
     SetTargetFPS(60);
     ToggleFullscreen();
     HideCursor();
 
     Vector2 wormPos[(int) maxWormLength];
+    Vector2 tailPos;
     Vector2 size = {squareRes, squareRes};
-
     
     int currentWormLength = 0;
     // make this non hard code
@@ -53,12 +53,17 @@ int main(void) {
             if (IsKeyDown(KEY_S)) currentAction = 4;
             if (IsKeyDown(KEY_D)) currentAction = 2;
 
+            // tailPos gets updated to the last worm segment
+            tailPos = wormPos[currentWormLength - 1];
+                
             for (int i = 0; i < currentWormLength; i++) {
+                
                 // remove previous worm segment
                 map[(int) wormPos[i + 1].x][(int) wormPos[i + 1].y] = 0;
                 
                 // inherit n worm segment to n - 1 worm segment
                 wormPos[currentWormLength - i] = wormPos[(currentWormLength - i) - 1];
+                
             }
 
             // prevent diagonal movements
@@ -77,9 +82,17 @@ int main(void) {
                 break;
             }
 
+            // apple position
+            if (wormPos[0].x == 5 && wormPos[0].y == 5) 
+            wormPos[currentWormLength++] = tailPos;
+
+            printf("X->%d ", (int) wormPos[0].x);
+            printf("Y: %d \n", (int) wormPos[0].y);
+
             // loop thru all worm segments and make it 1 in map (green in render)
             for (int i = 0; i < currentWormLength; i++)
-            map[(int)wormPos[i].x][(int)wormPos[i].y] = 1;
+            if ((i % 2) == 0) map[(int)wormPos[i].x][(int)wormPos[i].y] = 1;
+            else map[(int)wormPos[i].x][(int)wormPos[i].y] = 2;
             
             inputDelay = 15;
         }
@@ -91,7 +104,10 @@ int main(void) {
         // render anything above 0 to be green (worm) for now, objects and blocks might be stored as negatives
         for (int i = 0; i < pixelHeight; i++)
         for (int j = 0; j < pixelWidth; j++)
-        if (map[i][j] > 0) DrawRectangle(j * squareRes, i * squareRes, size.x, size.y, GREEN);
+        if (map[i][j] > 0) {
+            if (map[i][j] == 1) DrawRectangle(j * squareRes, i * squareRes, size.x, size.y, DARKGREEN);
+            else if (map[i][j] == 2) DrawRectangle(j * squareRes, i * squareRes, size.x, size.y, GREEN);
+        }
         
         EndDrawing();
     }
