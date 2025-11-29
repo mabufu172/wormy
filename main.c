@@ -1,7 +1,6 @@
 #include "include/raylib.h"
 #include <stdio.h>
 #include <stdlib.h>
-#include <math.h>
 
 const char gameName[] = "wormy";
 const int squareReso = 60;
