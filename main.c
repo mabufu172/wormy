@@ -6,9 +6,10 @@ const char gameName[] = "wormy";
 const int squareReso = 60;
 const int screenWidth = 1080;
 const int screenHeight = 1080;
-const int pixelReso = screenWidth / squareReso;
+const int mapReso = screenWidth / squareReso;
 const int voidYLevel = 17;
 int map[18][18]; //1080 / square reso
+int currentPressedKey;
 int currentAction = 0; // 0 = stationary, 1 = left, 2 = right, 3 = up, 4 = down
 int currentWormLength = 0;
 int currentLowestSegment; // int of the index of wormPos
@@ -32,6 +33,16 @@ bool checkCollision(Vector2 positionInMap, int direction, bool ignoreWorm) {
 
     return false;
 
+}
+
+bool canMove(int key) {
+    switch(key) {
+        case KEY_A: return !headCollisionState[0];
+        case KEY_D: return !headCollisionState[1];
+        case KEY_W: return !headCollisionState[2];
+        case KEY_S: return !headCollisionState[3];
+        default: return false;
+    }
 }
 
 void updateHeadCollisionState() {
@@ -59,8 +70,8 @@ void updateLowestSegment() {
 
 void initMap() {
     // fill everything with zeros (default; blanks)
-    for (int i = 0; i < pixelReso; i++)
-    for (int j = 0; j < pixelReso; j++)
+    for (int i = 0; i < mapReso; i++)
+    for (int j = 0; j < mapReso; j++)
     map[i][j] = 0;
 }
 
@@ -68,6 +79,15 @@ void drawSnakeToMap() {
     for (int i = 0; i < currentWormLength; i++)
     if (i== 0) map[(int)wormPos[i].x][(int)wormPos[i].y] = 3;
     else map[(int)wormPos[i].x][(int)wormPos[i].y] = 2;
+}
+
+void moveWorm(int key) {
+    switch (key) {
+        case KEY_A: wormPos[0].y -= 1; break;
+        case KEY_D: wormPos[0].y += 1; break;
+        case KEY_W: wormPos[0].x -= 1; break;
+        case KEY_S: wormPos[0].x += 1; break;
+    }
 }
 
 Color getColorFromId(int id) {
@@ -84,8 +104,8 @@ Color getColorFromId(int id) {
 void drawVisual() {
     BeginDrawing();
     ClearBackground(BLACK);
-    for (int i = 0; i < pixelReso; i++)
-    for (int j = 0; j < pixelReso; j++)
+    for (int i = 0; i < mapReso; i++)
+    for (int j = 0; j < mapReso; j++)
     if (map[i][j] > 1) DrawRectangle(j * squareReso, i * squareReso, squareReso, squareReso, getColorFromId(map[i][j]));
     else if (map[i][j] == 1) DrawCircle(j * squareReso + squareReso / 2, i * squareReso + squareReso / 2, squareReso / 2, RED);
     //DrawCircle()
@@ -93,15 +113,14 @@ void drawVisual() {
 }
 
 void gameLoop() {
-    // printf("X->%d ", (int) wormPos[0].x);
-    // printf("Y->%d\n", (int) wormPos[0].y);
-
+    
     // game over when worm touches void
     if (wormPos[currentLowestSegment].x >= voidYLevel) CloseWindow();
     
-    currentAction = 0;
+    // update current pressed key each game loop
+    currentPressedKey = GetKeyPressed();
 
-    if (shouldFall) {
+    if (shouldFall){
 
         for (int i = 0; i < currentWormLength; i++) {
             map[(int) wormPos[i].x][(int) wormPos[i].y] = 0;
@@ -114,50 +133,30 @@ void gameLoop() {
 
     }
 
-    //else if ((IsKeyPressed(KEY_W) || IsKeyPressed(KEY_A) || IsKeyPressed(KEY_S) || IsKeyPressed(KEY_D)) && inputCooldown == 0) {
-    else if ((IsKeyPressed(KEY_W) || IsKeyPressed(KEY_A) || IsKeyPressed(KEY_S) || IsKeyPressed(KEY_D))) {
-        if (IsKeyPressed(KEY_A) && !headCollisionState[0]) currentAction = 1;
-        if (IsKeyPressed(KEY_D) && !headCollisionState[1]) currentAction = 2;
-        if (IsKeyPressed(KEY_W) && !headCollisionState[2]) currentAction = 3;
-        if (IsKeyPressed(KEY_S) && !headCollisionState[3]) currentAction = 4;
-        
-        // make sure it will actually move
-        if (currentAction != 0) {
-            // tailPos gets updated to the last worm segment
-            tailPos = wormPos[currentWormLength - 1];
-            for (int i = 0; i < currentWormLength; i++) {
-                // remove previous worm segment from the map
-                map[(int) wormPos[i + 1].x][(int) wormPos[i + 1].y] = 0;
-                
-                // inherit n worm segment to n - 1 worm segment
-                wormPos[currentWormLength - i] = wormPos[(currentWormLength - i) - 1];
-            }
-            
-            // update worm head position, in this state, wormPos[0] (head) actually collides with wormPos[1]
-            switch (currentAction) {
-                case 1:
-                    wormPos[0].y -= 1;
-                break;
-                case 2:
-                    wormPos[0].y += 1;
-                    break;
-                case 3:
-                    wormPos[0].x -= 1;
-                    break;
-                case 4:
-                    wormPos[0].x += 1;
-                    break;
-            }
-            
-            // apple test
-            if (wormPos[0].x == 6 && wormPos[0].y == 6) 
-            wormPos[currentWormLength++] = tailPos;
+    else if (canMove(currentPressedKey)) {
 
-            updateLowestSegment();
-            drawSnakeToMap();
-            updateHeadCollisionState();
-            checkShouldFall();
+        // tailPos gets updated to the last worm segment
+        tailPos = wormPos[currentWormLength - 1];
+        for (int i = 0; i < currentWormLength; i++) {
+            // remove previous worm segment from the map
+            map[(int) wormPos[i + 1].x][(int) wormPos[i + 1].y] = 0;
+                
+            // inherit n worm segment to n - 1 worm segment
+            wormPos[currentWormLength - i] = wormPos[(currentWormLength - i) - 1];
         }
+
+        // update worm head position, in this state, wormPos[0] (head) actually collides with wormPos[1]
+        moveWorm(currentPressedKey);
+            
+        // apple test
+        if (wormPos[0].x == 6 && wormPos[0].y == 6) 
+        wormPos[currentWormLength++] = tailPos;
+        
+        updateLowestSegment();
+        drawSnakeToMap();
+        updateHeadCollisionState();
+        checkShouldFall();
+
     }
     drawVisual();
 }
