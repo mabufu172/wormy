@@ -1,6 +1,7 @@
 #include "include/raylib.h"
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 const char gameName[] = "wormy";
 const int squareReso = 60;
@@ -13,6 +14,7 @@ int map[18][18]; //1080 / square reso
 int currentAction = 0; // 0 = stationary, 1 = left, 2 = right, 3 = up, 4 = down
 int currentWormLength = 0;
 int currentLowestSegment; // int of the index of wormPos
+int currentLevel = 1;
 
 bool headCollisionState[4]; // true == will collide, false == free to go
 bool shouldFall;
@@ -66,17 +68,52 @@ void updateLowestSegment() {
     currentLowestSegment = lowestSegment;
 }
 
-void initMap() {
+void loadMap(int level) {
+
     // fill everything with zeros (default; blanks)
     for (int i = 0; i < mapReso; i++)
     for (int j = 0; j < mapReso; j++)
     map[i][j] = 0;
+
+    switch (level) {
+        case 1:
+            // apple
+            map[6][6] = 1;
+
+            // test showing where block is
+            map[6][13] = 5;
+            map[6][12] = 5;
+            map[6][11] = 5; 
+            map[6][10] = 5;
+            map[7][10] = 5;
+            map[8][10] = 5;
+            map[9][10] = 5;
+            map[9][9] = 5;
+            map[9][8] = 5;
+            map[9][7] = 5;
+
+            wormPos[currentWormLength++] = (Vector2) { 8, 7 };
+            wormPos[currentWormLength++] = (Vector2) { 8, 6 };
+            wormPos[currentWormLength++] = (Vector2) { 9, 6 };
+            break;
+    }
+
+    
 }
 
 void drawSnakeToMap() {
     for (int i = 0; i < currentWormLength; i++)
-    if (i== 0) map[(int)wormPos[i].x][(int)wormPos[i].y] = 3;
+    if (i == 0) map[(int)wormPos[i].x][(int)wormPos[i].y] = 3;
     else map[(int)wormPos[i].x][(int)wormPos[i].y] = 2;
+}
+
+void resetState() {
+    // clear out worm array
+    currentWormLength = 0;
+    memset(wormPos, 0, sizeof(wormPos));
+    loadMap(currentLevel);
+    drawSnakeToMap();
+    updateHeadCollisionState();
 }
 
 void moveWorm() {
@@ -113,7 +150,10 @@ void gameLoop() {
     // game over when worm touches void
     if (wormPos[currentLowestSegment].x >= voidYLevel) CloseWindow();
 
-    if (shouldFall){
+    // listening for R to reset level
+    if (IsKeyPressed(KEY_R)) resetState();
+
+    else if (shouldFall){
 
         for (int i = 0; i < currentWormLength; i++) {
             map[(int) wormPos[i].x][(int) wormPos[i].y] = 0;
@@ -141,8 +181,8 @@ void gameLoop() {
         // update worm head position, in this state, wormPos[0] (head) actually collides with wormPos[1]
         moveWorm();
             
-        // apple test
-        if (wormPos[0].x == 6 && wormPos[0].y == 6) 
+        // check if it touches apple
+        if (map[(int) wormPos[0].x][(int) wormPos[0].y] == 1)
         wormPos[currentWormLength++] = tailPos;
         
         updateLowestSegment();
@@ -155,35 +195,16 @@ void gameLoop() {
 }
 
 int main() {
-    initMap();
+    loadMap(1);
     InitWindow(screenWidth, screenHeight, gameName);
     SetTargetFPS(60);
     HideCursor();
     //ToggleFullscreen();
-
-    // make this non hard code
-    wormPos[currentWormLength++] = (Vector2) { 8, 7 };
-    wormPos[currentWormLength++] = (Vector2) { 8, 6 };
-    wormPos[currentWormLength++] = (Vector2) { 9, 6 };
     //wormPos[currentWormLength++] = (Vector2) { 6, 4 };
 
     // always draw intial worm state in the very beginning
     drawSnakeToMap();
     updateHeadCollisionState();
-
-    // apple
-    map[6][6] = 1;
-    // test showing where block is
-    map[6][13] = 5;
-    map[6][12] = 5;
-    map[6][11] = 5; 
-    map[6][10] = 5;
-    map[7][10] = 5;
-    map[8][10] = 5;
-    map[9][10] = 5;
-    map[9][9] = 5;
-    map[9][8] = 5;
-    map[9][7] = 5;
 
     while (!WindowShouldClose()) gameLoop();
 
