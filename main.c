@@ -14,12 +14,19 @@ int map[18][18]; //1080 / square reso
 int currentAction = 0; // 0 = stationary, 1 = left, 2 = right, 3 = up, 4 = down
 int currentWormLength = 0;
 int currentLowestSegment; // int of the index of wormPos
-int currentLevel = 2;
+int currentLevel = 1;
 
 bool headCollisionState[4]; // true == will collide, false == free to go
 bool shouldFall;
 Vector2 wormPos[30]; // max worm length is 30
 Vector2 tailPos;
+
+Vector2 getPortal(int map) {
+    switch (map) {
+        case 1: return (Vector2) { 5, 13 };
+        case 2: return (Vector2) { 7, 13 };
+    }
+}
 
 bool checkCollision(Vector2 positionInMap, int direction, bool ignoreWorm) {
     
@@ -184,13 +191,19 @@ Color getColorFromId(int id) {
 }
 
 void drawVisual() {
+    Vector2 portal = getPortal(currentLevel);
     BeginDrawing();
     ClearBackground(BLACK);
+    char str[3];
+    DrawText(TextFormat("Level %d", currentLevel), 25, 25, 25, WHITE);
     for (int i = 0; i < mapReso; i++)
-    for (int j = 0; j < mapReso; j++)
-    if (map[i][j] == 3) DrawCircle(j * squareReso + squareReso / 2, i * squareReso + squareReso / 2, squareReso / 2, RED);
-    else if (map[i][j] > 0) DrawRectangle(j * squareReso, i * squareReso, squareReso, squareReso, getColorFromId(map[i][j]));
-    //DrawCircle()
+    for (int j = 0; j < mapReso; j++) {
+        if (map[i][j] == 3) DrawCircle(j * squareReso + squareReso / 2, i * squareReso + squareReso / 2, squareReso / 2, RED);
+        else if (map[i][j] > 0) DrawRectangle(j * squareReso, i * squareReso, squareReso, squareReso, getColorFromId(map[i][j]));
+
+        // render portal (above map)
+        if (i == portal.x && j == portal.y) DrawCircle(j * squareReso + squareReso / 2, i * squareReso + squareReso / 2, squareReso / 2, PURPLE);
+    }
     EndDrawing();
 }
 
@@ -202,7 +215,7 @@ void gameLoop() {
     // listening for R to reset level
     if (IsKeyPressed(KEY_R)) resetState();
 
-    else if (shouldFall){
+    if (shouldFall){
 
         for (int i = 0; i < currentWormLength; i++) {
             map[(int) wormPos[i].x][(int) wormPos[i].y] = 0;
@@ -214,14 +227,6 @@ void gameLoop() {
         checkShouldFall();
 
     }
-    /*
-    bool canMove() {
-    if (IsKeyPressed(KEY_A)) return !headCollisionState[0];
-    if (IsKeyPressed(KEY_D)) return !headCollisionState[1];
-    if (IsKeyPressed(KEY_W)) return !headCollisionState[2];
-    if (IsKeyPressed(KEY_S)) return !headCollisionState[3];
-    }
-    */
 
     else if (canMove() || isGoingToEatApple()) {
 
@@ -238,9 +243,11 @@ void gameLoop() {
         // update worm head position, in this state, wormPos[0] (head) actually collides with wormPos[1]
         moveWorm();
             
-        // check if it touches apple
-        // if (map[(int) wormPos[0].x][(int) wormPos[0].y] == 3)
-        // wormPos[currentWormLength++] = tailPos;
+        //check if it touches portal
+        if (wormPos[0].x == getPortal(currentLevel).x && wormPos[0].y == getPortal(currentLevel).y) {
+            currentLevel++;
+            resetState();
+        }
         
         updateLowestSegment();
         drawSnakeToMap();
@@ -252,14 +259,13 @@ void gameLoop() {
 }
 
 int main() {
-    loadMap(currentLevel);
     InitWindow(screenWidth, screenHeight, gameName);
     SetTargetFPS(60);
     HideCursor();
     //ToggleFullscreen();
-    //wormPos[currentWormLength++] = (Vector2) { 6, 4 };
 
     // always draw intial worm state in the very beginning
+    loadMap(currentLevel);
     drawSnakeToMap();
     updateHeadCollisionState();
 
@@ -268,4 +274,4 @@ int main() {
     CloseWindow();
 
     return 0;
-}
+ }
