@@ -8,11 +8,12 @@ const int screenWidth = 1080;
 const int screenHeight = 1080;
 const int mapReso = screenWidth / squareReso;
 const int voidYLevel = 17;
+
 int map[18][18]; //1080 / square reso
-int currentPressedKey;
 int currentAction = 0; // 0 = stationary, 1 = left, 2 = right, 3 = up, 4 = down
 int currentWormLength = 0;
 int currentLowestSegment; // int of the index of wormPos
+
 bool headCollisionState[4]; // true == will collide, false == free to go
 bool shouldFall;
 Vector2 wormPos[30]; // max worm length is 30
@@ -35,14 +36,11 @@ bool checkCollision(Vector2 positionInMap, int direction, bool ignoreWorm) {
 
 }
 
-bool canMove(int key) {
-    switch(key) {
-        case KEY_A: return !headCollisionState[0];
-        case KEY_D: return !headCollisionState[1];
-        case KEY_W: return !headCollisionState[2];
-        case KEY_S: return !headCollisionState[3];
-        default: return false;
-    }
+bool canMove() {
+    if (IsKeyPressed(KEY_A)) return !headCollisionState[0];
+    if (IsKeyPressed(KEY_D)) return !headCollisionState[1];
+    if (IsKeyPressed(KEY_W)) return !headCollisionState[2];
+    if (IsKeyPressed(KEY_S)) return !headCollisionState[3];
 }
 
 void updateHeadCollisionState() {
@@ -81,13 +79,11 @@ void drawSnakeToMap() {
     else map[(int)wormPos[i].x][(int)wormPos[i].y] = 2;
 }
 
-void moveWorm(int key) {
-    switch (key) {
-        case KEY_A: wormPos[0].y -= 1; break;
-        case KEY_D: wormPos[0].y += 1; break;
-        case KEY_W: wormPos[0].x -= 1; break;
-        case KEY_S: wormPos[0].x += 1; break;
-    }
+void moveWorm() {
+    if (IsKeyPressed(KEY_A)) wormPos[0].y -= 1;
+    else if (IsKeyPressed(KEY_D)) wormPos[0].y += 1;
+    else if (IsKeyPressed(KEY_W)) wormPos[0].x -= 1;
+    else if (IsKeyPressed(KEY_S)) wormPos[0].x += 1;
 }
 
 Color getColorFromId(int id) {
@@ -116,9 +112,6 @@ void gameLoop() {
     
     // game over when worm touches void
     if (wormPos[currentLowestSegment].x >= voidYLevel) CloseWindow();
-    
-    // update current pressed key each game loop
-    currentPressedKey = GetKeyPressed();
 
     if (shouldFall){
 
@@ -133,7 +126,7 @@ void gameLoop() {
 
     }
 
-    else if (canMove(currentPressedKey)) {
+    else if (canMove()) {
 
         // tailPos gets updated to the last worm segment
         tailPos = wormPos[currentWormLength - 1];
@@ -146,7 +139,7 @@ void gameLoop() {
         }
 
         // update worm head position, in this state, wormPos[0] (head) actually collides with wormPos[1]
-        moveWorm(currentPressedKey);
+        moveWorm();
             
         // apple test
         if (wormPos[0].x == 6 && wormPos[0].y == 6) 
