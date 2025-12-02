@@ -23,9 +23,9 @@ Vector2 tailPos;
 
 Vector2 getPortal(int map) {
     switch (map) {
-        case 1: return (Vector2) { 5, 13 };
+        case 1: return (Vector2) { 3, 13 };
         case 2: return (Vector2) { 7, 13 };
-        case 3: return (Vector2) { 6, 11 };
+        case 3: return (Vector2) { 6, 12 };
     }
 }
 
@@ -107,93 +107,93 @@ void loadMap(int level) {
     switch (level) {
         case 1:
             // apple
-            map[6][6] = 3;
+            map[7][6] = 3;
 
             // test showing where block is
-            map[6][13] = 5;
-            map[6][12] = 5;
-            map[6][11] = 5; 
-            map[6][10] = 5;
+            map[7][13] = 5;
+            map[7][12] = 5;
+            map[7][11] = 5; 
             map[7][10] = 5;
             map[8][10] = 5;
             map[9][10] = 5;
-            map[9][9] = 5;
-            map[9][8] = 5;
-            map[9][7] = 5;
+            map[10][10] = 5;
+            map[10][9] = 5;
+            map[10][8] = 5;
+            map[10][7] = 5;
 
-            wormPos[currentWormLength++] = (Vector2) { 8, 7 };
-            wormPos[currentWormLength++] = (Vector2) { 8, 6 };
+            wormPos[currentWormLength++] = (Vector2) { 9, 7 };
             wormPos[currentWormLength++] = (Vector2) { 9, 6 };
+            wormPos[currentWormLength++] = (Vector2) { 10, 6 };
             break;
         case 2:
             // apple
-            map[9][9] = 3;
+            map[7][9] = 3;
 
             // map[y][x]
-            map[8][8] = 5;
-            map[8][9] = 5;
-            map[9][8] = 5;
+            map[6][8] = 5;
+            map[6][9] = 5;
+            map[7][8] = 5;
 
-            map[12][11] = 5;
-            map[12][10] = 5;
-            map[12][9] = 5;
-            map[11][9] = 5;
-            map[11][8] = 5;
-            map[11][7] = 5;
-            map[11][6] = 5;
-            map[11][5] = 5;
-            map[11][4] = 5;
-
-            map[11][11] = 5;
             map[10][11] = 5;
+            map[10][10] = 5;
+            map[10][9] = 5;
+            map[9][9] = 5;
+            map[9][8] = 5;
+            map[9][7] = 5;
+            map[9][6] = 5;
+            map[9][5] = 5;
+            map[9][4] = 5;
+
             map[9][11] = 5;
             map[8][11] = 5;
-            map[8][12] = 5;
-            map[8][13] = 5;
+            map[7][11] = 5;
+            map[6][11] = 5;
+            map[6][12] = 5;
+            map[6][13] = 5;
 
-            wormPos[currentWormLength++] = (Vector2) { 10, 6 };
-            wormPos[currentWormLength++] = (Vector2) { 10, 5 };
-            wormPos[currentWormLength++] = (Vector2) { 10, 4 };
+            wormPos[currentWormLength++] = (Vector2) { 8, 6 };
+            wormPos[currentWormLength++] = (Vector2) { 8, 5 };
+            wormPos[currentWormLength++] = (Vector2) { 8, 4 };
             break;
         case 3:
 
             // map[y][x]
+            map[7][7] = 5;
             map[7][6] = 5;
             map[7][5] = 5;
-            map[7][4] = 5;
 
-            map[8][5] = 5;
-            map[9][5] = 5;
-            map[10][5] = 5;
-            map[11][5] = 5;
+            map[8][6] = 5;
+            map[9][6] = 5;
+            map[10][6] = 5;
             map[11][6] = 5;
-            map[11][8] = 5;
+            map[11][7] = 5;
+            map[11][9] = 5;
 
+            map[7][10] = 5;
+            map[6][10] = 5;
+            map[5][10] = 5;
+            map[4][10] = 5;
+            //
+            map[8][9] = 5;
             map[7][9] = 5;
             map[6][9] = 5;
             map[5][9] = 5;
             map[4][9] = 5;
-            //
-            map[8][8] = 5;
-            map[7][8] = 5;
-            map[6][8] = 5;
-            map[5][8] = 5;
-            map[4][8] = 5;
 
-            map[10][8] = 5;
             map[10][9] = 5;
             map[10][10] = 5;
             map[10][11] = 5;
-            map[9][11] = 5;
-            map[8][11] = 5;
-            map[7][11] = 5;
+            map[10][12] = 5;
+            map[9][12] = 5;
+            map[8][12] = 5;
+            map[7][12] = 5;
 
             //apple
-            map[10][7] = 3;
+            map[10][8] = 3;
 
+            wormPos[currentWormLength++] = (Vector2) { 6, 7 };
             wormPos[currentWormLength++] = (Vector2) { 6, 6 };
             wormPos[currentWormLength++] = (Vector2) { 6, 5 };
-            wormPos[currentWormLength++] = (Vector2) { 6, 4 };
             break;
     }
 }
