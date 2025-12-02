@@ -8,9 +8,9 @@ const int squareReso = 60;
 const int screenWidth = 1080;
 const int screenHeight = 1080;
 const int mapReso = screenWidth / squareReso;
-const int voidYLevel = 17;
+const int voidYLevel = 19;
 
-int map[18][18]; //1080 / square reso
+int map[20][18]; //1080 / square reso, 20 is to allow worm to fall beyond map
 int currentAction = 0; // 0 = stationary, 1 = left, 2 = right, 3 = up, 4 = down
 int currentWormLength = 0;
 int currentLowestSegment; // int of the index of wormPos
@@ -25,6 +25,7 @@ Vector2 getPortal(int map) {
     switch (map) {
         case 1: return (Vector2) { 5, 13 };
         case 2: return (Vector2) { 7, 13 };
+        case 3: return (Vector2) { 6, 11 };
     }
 }
 
@@ -154,6 +155,46 @@ void loadMap(int level) {
             wormPos[currentWormLength++] = (Vector2) { 10, 5 };
             wormPos[currentWormLength++] = (Vector2) { 10, 4 };
             break;
+        case 3:
+
+            // map[y][x]
+            map[7][6] = 5;
+            map[7][5] = 5;
+            map[7][4] = 5;
+
+            map[8][5] = 5;
+            map[9][5] = 5;
+            map[10][5] = 5;
+            map[11][5] = 5;
+            map[11][6] = 5;
+            map[11][8] = 5;
+
+            map[7][9] = 5;
+            map[6][9] = 5;
+            map[5][9] = 5;
+            map[4][9] = 5;
+            //
+            map[8][8] = 5;
+            map[7][8] = 5;
+            map[6][8] = 5;
+            map[5][8] = 5;
+            map[4][8] = 5;
+
+            map[10][8] = 5;
+            map[10][9] = 5;
+            map[10][10] = 5;
+            map[10][11] = 5;
+            map[9][11] = 5;
+            map[8][11] = 5;
+            map[7][11] = 5;
+
+            //apple
+            map[10][7] = 3;
+
+            wormPos[currentWormLength++] = (Vector2) { 6, 6 };
+            wormPos[currentWormLength++] = (Vector2) { 6, 5 };
+            wormPos[currentWormLength++] = (Vector2) { 6, 4 };
+            break;
     }
 }
 
@@ -170,6 +211,7 @@ void resetState() {
     loadMap(currentLevel);
     drawSnakeToMap();
     updateHeadCollisionState();
+    checkShouldFall();
 }
 
 void moveWorm() {
@@ -194,8 +236,8 @@ void drawVisual() {
     Vector2 portal = getPortal(currentLevel);
     BeginDrawing();
     ClearBackground(BLACK);
-    char str[3];
-    DrawText(TextFormat("Level %d", currentLevel), 25, 25, 25, WHITE);
+    DrawText(TextFormat("Level %d", currentLevel), 25, 25, 30, WHITE);
+    DrawText(TextFormat("Press \"R\" to reset", currentLevel), 380, 1000, 30, WHITE);
     for (int i = 0; i < mapReso; i++)
     for (int j = 0; j < mapReso; j++) {
         if (map[i][j] == 3) DrawCircle(j * squareReso + squareReso / 2, i * squareReso + squareReso / 2, squareReso / 2, RED);
@@ -210,7 +252,7 @@ void drawVisual() {
 void gameLoop() {
     
     // game over when worm touches void
-    if (wormPos[currentLowestSegment].x >= voidYLevel) CloseWindow();
+    if (wormPos[currentLowestSegment].x >= voidYLevel) resetState();
 
     // listening for R to reset level
     if (IsKeyPressed(KEY_R)) resetState();
