@@ -14,7 +14,7 @@ int map[18][18]; //1080 / square reso
 int currentAction = 0; // 0 = stationary, 1 = left, 2 = right, 3 = up, 4 = down
 int currentWormLength = 0;
 int currentLowestSegment; // int of the index of wormPos
-int currentLevel = 1;
+int currentLevel = 2;
 
 bool headCollisionState[4]; // true == will collide, false == free to go
 bool shouldFall;
@@ -24,8 +24,8 @@ Vector2 tailPos;
 bool checkCollision(Vector2 positionInMap, int direction, bool ignoreWorm) {
     
     // setting num to two causes it to ignore worm as worm IDs are 2 and 3 (head and body)
-    int num = 1;
-    if (ignoreWorm) num = 3;
+    int num = 0;
+    if (ignoreWorm) num = 2;
 
     switch (direction) {
         case 1: return map[(int) positionInMap.x][(int) positionInMap.y - 1] > num;
@@ -43,6 +43,27 @@ bool canMove() {
     if (IsKeyPressed(KEY_D)) return !headCollisionState[1];
     if (IsKeyPressed(KEY_W)) return !headCollisionState[2];
     if (IsKeyPressed(KEY_S)) return !headCollisionState[3];
+}
+
+bool isGoingToEatApple() {
+    if (IsKeyPressed(KEY_A) && map[(int) wormPos[0].x][(int) wormPos[0].y - 1] == 3) {
+        wormPos[currentWormLength++] = tailPos;
+        return true;
+    }
+    if (IsKeyPressed(KEY_D) && map[(int) wormPos[0].x][(int) wormPos[0].y + 1] == 3) {
+        wormPos[currentWormLength++] = tailPos;
+        return true;
+    }
+    if (IsKeyPressed(KEY_W) && map[(int) wormPos[0].x - 1][(int) wormPos[0].y] == 3) {
+        wormPos[currentWormLength++] = tailPos;
+        return true;
+    }
+    if (IsKeyPressed(KEY_S) && map[(int) wormPos[0].x + 1][(int) wormPos[0].y] == 3) {
+        wormPos[currentWormLength++] = tailPos;
+        return true;
+    }
+
+    return false;
 }
 
 void updateHeadCollisionState() {
@@ -78,7 +99,7 @@ void loadMap(int level) {
     switch (level) {
         case 1:
             // apple
-            map[6][6] = 1;
+            map[6][6] = 3;
 
             // test showing where block is
             map[6][13] = 5;
@@ -96,15 +117,43 @@ void loadMap(int level) {
             wormPos[currentWormLength++] = (Vector2) { 8, 6 };
             wormPos[currentWormLength++] = (Vector2) { 9, 6 };
             break;
-    }
+        case 2:
+            // apple
+            map[9][9] = 3;
 
-    
+            // map[y][x]
+            map[8][8] = 5;
+            map[8][9] = 5;
+            map[9][8] = 5;
+
+            map[12][11] = 5;
+            map[12][10] = 5;
+            map[12][9] = 5;
+            map[11][9] = 5;
+            map[11][8] = 5;
+            map[11][7] = 5;
+            map[11][6] = 5;
+            map[11][5] = 5;
+            map[11][4] = 5;
+
+            map[11][11] = 5;
+            map[10][11] = 5;
+            map[9][11] = 5;
+            map[8][11] = 5;
+            map[8][12] = 5;
+            map[8][13] = 5;
+
+            wormPos[currentWormLength++] = (Vector2) { 10, 6 };
+            wormPos[currentWormLength++] = (Vector2) { 10, 5 };
+            wormPos[currentWormLength++] = (Vector2) { 10, 4 };
+            break;
+    }
 }
 
 void drawSnakeToMap() {
     for (int i = 0; i < currentWormLength; i++)
-    if (i == 0) map[(int)wormPos[i].x][(int)wormPos[i].y] = 3;
-    else map[(int)wormPos[i].x][(int)wormPos[i].y] = 2;
+    if (i == 0) map[(int)wormPos[i].x][(int)wormPos[i].y] = 2;
+    else map[(int)wormPos[i].x][(int)wormPos[i].y] = 1;
 }
 
 void resetState() {
@@ -125,9 +174,9 @@ void moveWorm() {
 
 Color getColorFromId(int id) {
     switch(id) {
-        case 1: return RED;
-        case 2: return GREEN;
-        case 3: return DARKGREEN;
+        case 1: return GREEN;
+        case 2: return DARKGREEN;
+        case 3: return RED;
         case 4: return GRAY;
         case 5: return BROWN;
     }
@@ -139,8 +188,8 @@ void drawVisual() {
     ClearBackground(BLACK);
     for (int i = 0; i < mapReso; i++)
     for (int j = 0; j < mapReso; j++)
-    if (map[i][j] > 1) DrawRectangle(j * squareReso, i * squareReso, squareReso, squareReso, getColorFromId(map[i][j]));
-    else if (map[i][j] == 1) DrawCircle(j * squareReso + squareReso / 2, i * squareReso + squareReso / 2, squareReso / 2, RED);
+    if (map[i][j] == 3) DrawCircle(j * squareReso + squareReso / 2, i * squareReso + squareReso / 2, squareReso / 2, RED);
+    else if (map[i][j] > 0) DrawRectangle(j * squareReso, i * squareReso, squareReso, squareReso, getColorFromId(map[i][j]));
     //DrawCircle()
     EndDrawing();
 }
@@ -165,8 +214,16 @@ void gameLoop() {
         checkShouldFall();
 
     }
+    /*
+    bool canMove() {
+    if (IsKeyPressed(KEY_A)) return !headCollisionState[0];
+    if (IsKeyPressed(KEY_D)) return !headCollisionState[1];
+    if (IsKeyPressed(KEY_W)) return !headCollisionState[2];
+    if (IsKeyPressed(KEY_S)) return !headCollisionState[3];
+    }
+    */
 
-    else if (canMove()) {
+    else if (canMove() || isGoingToEatApple()) {
 
         // tailPos gets updated to the last worm segment
         tailPos = wormPos[currentWormLength - 1];
@@ -182,8 +239,8 @@ void gameLoop() {
         moveWorm();
             
         // check if it touches apple
-        if (map[(int) wormPos[0].x][(int) wormPos[0].y] == 1)
-        wormPos[currentWormLength++] = tailPos;
+        // if (map[(int) wormPos[0].x][(int) wormPos[0].y] == 3)
+        // wormPos[currentWormLength++] = tailPos;
         
         updateLowestSegment();
         drawSnakeToMap();
@@ -195,7 +252,7 @@ void gameLoop() {
 }
 
 int main() {
-    loadMap(1);
+    loadMap(currentLevel);
     InitWindow(screenWidth, screenHeight, gameName);
     SetTargetFPS(60);
     HideCursor();
