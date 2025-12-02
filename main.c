@@ -7,10 +7,11 @@ const int squareReso = 60;
 const int screenWidth = 1080;
 const int screenHeight = 1080;
 const int pixelReso = screenWidth / squareReso;
+const int voidYLevel = 17;
 int map[18][18]; //1080 / square reso
-int inputCooldown = 0;
 int currentAction = 0; // 0 = stationary, 1 = left, 2 = right, 3 = up, 4 = down
 int currentWormLength = 0;
+int currentLowestSegment; // int of the index of wormPos
 bool headCollisionState[4]; // true == will collide, false == free to go
 bool shouldFall;
 Vector2 wormPos[30]; // max worm length is 30
@@ -18,9 +19,9 @@ Vector2 tailPos;
 
 bool checkCollision(Vector2 positionInMap, int direction, bool ignoreWorm) {
     
-    // setting num to two causes it to ignore worm as worm IDs are 1 and 2 (head and body)
-    int num = 0;
-    if (ignoreWorm) num = 2;
+    // setting num to two causes it to ignore worm as worm IDs are 2 and 3 (head and body)
+    int num = 1;
+    if (ignoreWorm) num = 3;
 
     switch (direction) {
         case 1: return map[(int) positionInMap.x][(int) positionInMap.y - 1] > num;
@@ -39,12 +40,21 @@ void updateHeadCollisionState() {
 }
 
 void checkShouldFall() {
-
     bool onGround = false;
     for (int i = 0; i < currentWormLength; i++) 
     if (checkCollision(wormPos[i], 4, true)) onGround = true;
-
     shouldFall = !onGround;
+}
+
+void updateLowestSegment() {
+    int lowest = 0;
+    int lowestSegment;
+    for (int i = 0; i < currentWormLength; i++)
+    if (wormPos[i].x > lowest) {
+        lowest = wormPos[i].x;
+        lowestSegment = i;
+    }
+    currentLowestSegment = lowestSegment;
 }
 
 void initMap() {
@@ -56,15 +66,15 @@ void initMap() {
 
 void drawSnakeToMap() {
     for (int i = 0; i < currentWormLength; i++)
-    if (i== 0) map[(int)wormPos[i].x][(int)wormPos[i].y] = 2;
-    else map[(int)wormPos[i].x][(int)wormPos[i].y] = 1;
+    if (i== 0) map[(int)wormPos[i].x][(int)wormPos[i].y] = 3;
+    else map[(int)wormPos[i].x][(int)wormPos[i].y] = 2;
 }
 
 Color getColorFromId(int id) {
     switch(id) {
-        case 1: return GREEN;
-        case 2: return DARKGREEN;
-        case 3: return RED;
+        case 1: return RED;
+        case 2: return GREEN;
+        case 3: return DARKGREEN;
         case 4: return GRAY;
         case 5: return BROWN;
     }
@@ -76,14 +86,18 @@ void drawVisual() {
     ClearBackground(BLACK);
     for (int i = 0; i < pixelReso; i++)
     for (int j = 0; j < pixelReso; j++)
-    if (map[i][j] != 0) 
-    DrawRectangle(j * squareReso, i * squareReso, squareReso, squareReso, getColorFromId(map[i][j]));
+    if (map[i][j] > 1) DrawRectangle(j * squareReso, i * squareReso, squareReso, squareReso, getColorFromId(map[i][j]));
+    else if (map[i][j] == 1) DrawCircle(j * squareReso + squareReso / 2, i * squareReso + squareReso / 2, squareReso / 2, RED);
+    //DrawCircle()
     EndDrawing();
 }
 
 void gameLoop() {
-    
-    if (inputCooldown > 0) inputCooldown--;
+    // printf("X->%d ", (int) wormPos[0].x);
+    // printf("Y->%d\n", (int) wormPos[0].y);
+
+    // game over when worm touches void
+    if (wormPos[currentLowestSegment].x >= voidYLevel) CloseWindow();
     
     currentAction = 0;
 
@@ -100,11 +114,12 @@ void gameLoop() {
 
     }
 
-    else if ((IsKeyDown(KEY_W) || IsKeyDown(KEY_A) || IsKeyDown(KEY_S) || IsKeyDown(KEY_D)) && inputCooldown == 0) {
-        if (IsKeyDown(KEY_A) && !headCollisionState[0]) currentAction = 1;
-        if (IsKeyDown(KEY_D) && !headCollisionState[1]) currentAction = 2;
-        if (IsKeyDown(KEY_W) && !headCollisionState[2]) currentAction = 3;
-        if (IsKeyDown(KEY_S) && !headCollisionState[3]) currentAction = 4;
+    //else if ((IsKeyPressed(KEY_W) || IsKeyPressed(KEY_A) || IsKeyPressed(KEY_S) || IsKeyPressed(KEY_D)) && inputCooldown == 0) {
+    else if ((IsKeyPressed(KEY_W) || IsKeyPressed(KEY_A) || IsKeyPressed(KEY_S) || IsKeyPressed(KEY_D))) {
+        if (IsKeyPressed(KEY_A) && !headCollisionState[0]) currentAction = 1;
+        if (IsKeyPressed(KEY_D) && !headCollisionState[1]) currentAction = 2;
+        if (IsKeyPressed(KEY_W) && !headCollisionState[2]) currentAction = 3;
+        if (IsKeyPressed(KEY_S) && !headCollisionState[3]) currentAction = 4;
         
         // make sure it will actually move
         if (currentAction != 0) {
@@ -135,22 +150,16 @@ void gameLoop() {
             }
             
             // apple test
-            //if (wormPos[0].x == 5 && wormPos[0].y == 5) 
-            //wormPos[currentWormLength++] = tailPos;
-            
+            if (wormPos[0].x == 6 && wormPos[0].y == 6) 
+            wormPos[currentWormLength++] = tailPos;
+
+            updateLowestSegment();
             drawSnakeToMap();
             updateHeadCollisionState();
-            
-            // printf("X->%d ", (int) wormPos[0].x);
-            // printf("Y->%d\n", (int) wormPos[0].y);
-            inputCooldown = 15;
             checkShouldFall();
-            printf("Should fall? %d\n", shouldFall);
         }
     }
-    
     drawVisual();
-
 }
 
 int main() {
@@ -161,17 +170,28 @@ int main() {
     //ToggleFullscreen();
 
     // make this non hard code
-    wormPos[currentWormLength++] = (Vector2) { 0, 3 };
-    wormPos[currentWormLength++] = (Vector2) { 0, 2 };
-    wormPos[currentWormLength++] = (Vector2) { 0, 1 };
-    wormPos[currentWormLength++] = (Vector2) { 0, 0 };
+    wormPos[currentWormLength++] = (Vector2) { 8, 7 };
+    wormPos[currentWormLength++] = (Vector2) { 8, 6 };
+    wormPos[currentWormLength++] = (Vector2) { 9, 6 };
+    //wormPos[currentWormLength++] = (Vector2) { 6, 4 };
 
     // always draw intial worm state in the very beginning
     drawSnakeToMap();
     updateHeadCollisionState();
 
-    // test showing where apple is
-    map[4][4] = 3;
+    // apple
+    map[6][6] = 1;
+    // test showing where block is
+    map[6][13] = 5;
+    map[6][12] = 5;
+    map[6][11] = 5; 
+    map[6][10] = 5;
+    map[7][10] = 5;
+    map[8][10] = 5;
+    map[9][10] = 5;
+    map[9][9] = 5;
+    map[9][8] = 5;
+    map[9][7] = 5;
 
     while (!WindowShouldClose()) gameLoop();
 
