@@ -251,7 +251,7 @@ void loadMap(int level) {
     }
 }
 
-void drawSnakeToMap() {
+void drawWormToMap() {
     for (int i = 0; i < currentWormLength; i++)
     if (i == 0) map[(int)wormPos[i].x][(int)wormPos[i].y] = 2;
     else map[(int)wormPos[i].x][(int)wormPos[i].y] = 1;
@@ -262,7 +262,7 @@ void resetState() {
     currentWormLength = 0;
     memset(wormPos, 0, sizeof(wormPos));
     loadMap(currentLevel);
-    drawSnakeToMap();
+    drawWormToMap();
     updateHeadCollisionState();
     checkShouldFall();
 }
@@ -308,7 +308,7 @@ void gameLoop() {
             wormPos[i].x += 1;
         }
         
-        drawSnakeToMap();
+        drawWormToMap();
         updateHeadCollisionState();
         checkShouldFall();
     }
@@ -337,7 +337,7 @@ void gameLoop() {
         }
         
         updateLowestSegment();
-        drawSnakeToMap();
+        drawWormToMap();
         updateHeadCollisionState();
         checkShouldFall();
 
@@ -394,7 +394,7 @@ int main() {
 
     // always draw intial state in the very beginning
     loadMap(currentLevel);
-    drawSnakeToMap();
+    drawWormToMap();
     updateHeadCollisionState();
 
     while (!WindowShouldClose()) gameLoop();
