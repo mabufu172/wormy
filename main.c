@@ -288,10 +288,10 @@ void drawVisual() {
     BeginDrawing();
     ClearBackground(BLACK);
     if (currentLevel != 6) {
-        (TextFormat("Level %d", currentLevel), 25, 25, 30, WHITE);
+        DrawText(TextFormat("Level %d", currentLevel), 25, 25, 30, WHITE);
         DrawText(TextFormat("Press \"R\" to reset", currentLevel), 380, 1000, 30, WHITE);
     } else {
-        DrawText(TextFormat("The End!"), 330, 460, 80, WHITE);
+        DrawText(TextFormat("The End!"), 350, 470, 80, WHITE);
     }
     for (int i = 0; i < mapReso; i++)
     for (int j = 0; j < mapReso; j++) {
