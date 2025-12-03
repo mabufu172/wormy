@@ -84,7 +84,6 @@ bool isGoingToEatApple() {
         wormPos[currentWormLength++] = tailPos;
         return true;
     }
-
     return false;
 }
 
@@ -94,13 +93,6 @@ void updateFacing() {
     else if (IsKeyPressed(KEY_W)) headTexture = LoadTextureFromImage(headImageUp);
     else if (IsKeyPressed(KEY_S)) headTexture = LoadTextureFromImage(headImageDown);
 }
-
-// void updateModelFromCurrentFacing(int facing) {
-//     if (facing == 1) headTexture = LoadTextureFromImage(headImageLeft);
-//     else if (facing == 2) headTexture = LoadTextureFromImage(headImageRight);
-//     else if (facing == 3) headTexture = LoadTextureFromImage(headImageUp);
-//     else if (facing == 4) headTexture = LoadTextureFromImage(headImageDown);
-// }
 
 void updateHeadCollisionState() {
     for (int i = 0; i < 4; i++)
@@ -148,6 +140,7 @@ void loadMap(int level) {
             wormPos[currentWormLength++] = (Vector2) { 9, 7 };
             wormPos[currentWormLength++] = (Vector2) { 9, 6 };
             wormPos[currentWormLength++] = (Vector2) { 10, 6 };
+            headTexture = LoadTextureFromImage(headImageRight);
             break;
         case 2:
             map[7][9] = 3;
@@ -172,6 +165,7 @@ void loadMap(int level) {
             wormPos[currentWormLength++] = (Vector2) { 8, 6 };
             wormPos[currentWormLength++] = (Vector2) { 8, 5 };
             wormPos[currentWormLength++] = (Vector2) { 8, 4 };
+            headTexture = LoadTextureFromImage(headImageRight);
             break;
         case 3:
             map[7][7] = 5;
@@ -203,6 +197,7 @@ void loadMap(int level) {
             wormPos[currentWormLength++] = (Vector2) { 6, 7 };
             wormPos[currentWormLength++] = (Vector2) { 6, 6 };
             wormPos[currentWormLength++] = (Vector2) { 6, 5 };
+            headTexture = LoadTextureFromImage(headImageRight);
             break;
         case 4:
             map[7][8] = 3;
@@ -227,6 +222,7 @@ void loadMap(int level) {
             wormPos[currentWormLength++] = (Vector2) { 8, 6 };
             wormPos[currentWormLength++] = (Vector2) { 8, 5 };
             wormPos[currentWormLength++] = (Vector2) { 8, 4 };
+            headTexture = LoadTextureFromImage(headImageRight);
             break;
         case 5:
             map[7][8] = 5;
@@ -241,6 +237,7 @@ void loadMap(int level) {
             wormPos[currentWormLength++] = (Vector2) { 4, 8 };
             wormPos[currentWormLength++] = (Vector2) { 5, 8 };
             wormPos[currentWormLength++] = (Vector2) { 6, 8 };
+            headTexture = LoadTextureFromImage(headImageUp);
             break;
     }
 }
