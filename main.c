@@ -21,6 +21,9 @@ bool shouldFall;
 Vector2 wormPos[30]; // max worm length is 30
 Vector2 tailPos;
 
+Image appleImage;
+Image portalImage;
+Image blockImage;
 Image headImageDown;
 Image headImageLeft;
 Image headImageUp;
@@ -131,10 +134,7 @@ void loadMap(int level) {
 
     switch (level) {
         case 1:
-            // apple
             map[7][6] = 3;
-
-            // test showing where block is
             map[7][13] = 5;
             map[7][12] = 5;
             map[7][11] = 5; 
@@ -145,20 +145,15 @@ void loadMap(int level) {
             map[10][9] = 5;
             map[10][8] = 5;
             map[10][7] = 5;
-
             wormPos[currentWormLength++] = (Vector2) { 9, 7 };
             wormPos[currentWormLength++] = (Vector2) { 9, 6 };
             wormPos[currentWormLength++] = (Vector2) { 10, 6 };
             break;
         case 2:
-            // apple
             map[7][9] = 3;
-
-            // map[y][x]
             map[6][8] = 5;
             map[6][9] = 5;
             map[7][8] = 5;
-
             map[10][11] = 5;
             map[10][10] = 5;
             map[10][9] = 5;
@@ -168,43 +163,35 @@ void loadMap(int level) {
             map[9][6] = 5;
             map[9][5] = 5;
             map[9][4] = 5;
-
             map[9][11] = 5;
             map[8][11] = 5;
             map[7][11] = 5;
             map[6][11] = 5;
             map[6][12] = 5;
             map[6][13] = 5;
-
             wormPos[currentWormLength++] = (Vector2) { 8, 6 };
             wormPos[currentWormLength++] = (Vector2) { 8, 5 };
             wormPos[currentWormLength++] = (Vector2) { 8, 4 };
             break;
         case 3:
-
-            // map[y][x]
             map[7][7] = 5;
             map[7][6] = 5;
             map[7][5] = 5;
-
             map[8][6] = 5;
             map[9][6] = 5;
             map[10][6] = 5;
             map[11][6] = 5;
             map[11][7] = 5;
             map[11][9] = 5;
-
             map[7][10] = 5;
             map[6][10] = 5;
             map[5][10] = 5;
             map[4][10] = 5;
-            //
             map[8][9] = 5;
             map[7][9] = 5;
             map[6][9] = 5;
             map[5][9] = 5;
             map[4][9] = 5;
-
             map[10][9] = 5;
             map[10][10] = 5;
             map[10][11] = 5;
@@ -212,50 +199,37 @@ void loadMap(int level) {
             map[9][12] = 5;
             map[8][12] = 5;
             map[7][12] = 5;
-
-            //apple
             map[10][8] = 3;
-
             wormPos[currentWormLength++] = (Vector2) { 6, 7 };
             wormPos[currentWormLength++] = (Vector2) { 6, 6 };
             wormPos[currentWormLength++] = (Vector2) { 6, 5 };
             break;
         case 4:
-            // apple
             map[7][8] = 3;
-
             map[7][10] = 5;
             map[5][10] = 5;
             map[5][9] = 5;
-
             map[9][11] = 5;
             map[9][12] = 5;
             map[9][13] = 5;
             map[9][14] = 5;
-
-            // map[y][x]
             map[9][7] = 5;
             map[9][7] = 5;
             map[9][7] = 5;
-
             map[7][6] = 5;
             map[6][6] = 5;
             map[5][6] = 5;
-
             map[9][7] = 5;
             map[9][6] = 5;
             map[9][5] = 5;
             map[9][4] = 5;
             map[9][3] = 5;
-
             wormPos[currentWormLength++] = (Vector2) { 8, 6 };
             wormPos[currentWormLength++] = (Vector2) { 8, 5 };
             wormPos[currentWormLength++] = (Vector2) { 8, 4 };
             break;
         case 5:
             map[7][8] = 5;
-
-            //apple
             map[8][9] = 3;
             map[8][7] = 3;
             map[9][10] = 3;
@@ -264,7 +238,6 @@ void loadMap(int level) {
             map[10][9] = 3;
             map[10][7] = 3;
             map[11][8] = 3;
-
             wormPos[currentWormLength++] = (Vector2) { 4, 8 };
             wormPos[currentWormLength++] = (Vector2) { 5, 8 };
             wormPos[currentWormLength++] = (Vector2) { 6, 8 };
@@ -385,10 +358,10 @@ void gameLoop() {
     drawVisual();
 }
 
-int main() {
-    Image appleImage = LoadImage("sprites/apple.png");
-    Image portalImage = LoadImage("sprites/portal.png");
-    Image blockImage = LoadImage("sprites/block.png");
+void loadSprites() {
+    appleImage = LoadImage("sprites/apple.png");
+    portalImage = LoadImage("sprites/portal.png");
+    blockImage = LoadImage("sprites/block.png");
     headImageRight = LoadImage("sprites/head.png");
     
     ImageResizeNN(&headImageRight, 60, 60);
@@ -405,26 +378,17 @@ int main() {
     ImageRotateCW(&headImageLeft);
     ImageRotateCCW(&headImageUp);
 
-    InitWindow(screenWidth, screenHeight, gameName);
-    SetTargetFPS(60);
-    HideCursor();
-
     headTexture = LoadTextureFromImage(headImageLeft);
     blockTexture = LoadTextureFromImage(blockImage);
     appleTexture = LoadTextureFromImage(appleImage);
     portalTexture = LoadTextureFromImage(portalImage);
+}
+
+void unloadSprites() {
+    // not used anymore, i know.
     UnloadImage(portalImage);
     UnloadImage(appleImage);
     UnloadImage(blockImage);
-
-    //ToggleFullscreen();
-
-    // always draw intial worm state in the very beginning
-    loadMap(currentLevel);
-    drawSnakeToMap();
-    updateHeadCollisionState();
-
-    while (!WindowShouldClose()) gameLoop();
 
     UnloadTexture(headTexture);
     UnloadTexture(blockTexture);
@@ -434,6 +398,22 @@ int main() {
     UnloadImage(headImageLeft);
     UnloadImage(headImageUp);
     UnloadImage(headImageDown);
+}
+
+int main() {
+    InitWindow(screenWidth, screenHeight, gameName);
+    SetTargetFPS(60);
+    HideCursor();
+    loadSprites();
+
+    // always draw intial state in the very beginning
+    loadMap(currentLevel);
+    drawSnakeToMap();
+    updateHeadCollisionState();
+
+    while (!WindowShouldClose()) gameLoop();
+
+    unloadSprites();
     CloseWindow();
 
     return 0;
