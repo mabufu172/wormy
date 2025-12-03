@@ -26,6 +26,8 @@ Vector2 getPortal(int map) {
         case 1: return (Vector2) { 3, 13 };
         case 2: return (Vector2) { 7, 13 };
         case 3: return (Vector2) { 6, 12 };
+        case 4: return (Vector2) { 10, 14 };
+        case 5: return (Vector2) { 9, 16 };
     }
 }
 
@@ -195,6 +197,55 @@ void loadMap(int level) {
             wormPos[currentWormLength++] = (Vector2) { 6, 6 };
             wormPos[currentWormLength++] = (Vector2) { 6, 5 };
             break;
+        case 4:
+            // apple
+            map[7][8] = 3;
+
+            map[7][10] = 5;
+            map[5][10] = 5;
+            map[5][9] = 5;
+
+            map[9][11] = 5;
+            map[9][12] = 5;
+            map[9][13] = 5;
+            map[9][14] = 5;
+
+            // map[y][x]
+            map[9][7] = 5;
+            map[9][7] = 5;
+            map[9][7] = 5;
+
+            map[7][6] = 5;
+            map[6][6] = 5;
+            map[5][6] = 5;
+
+            map[9][7] = 5;
+            map[9][6] = 5;
+            map[9][5] = 5;
+            map[9][4] = 5;
+            map[9][3] = 5;
+
+            wormPos[currentWormLength++] = (Vector2) { 8, 6 };
+            wormPos[currentWormLength++] = (Vector2) { 8, 5 };
+            wormPos[currentWormLength++] = (Vector2) { 8, 4 };
+            break;
+        case 5:
+            map[7][8] = 5;
+
+            //apple
+            map[8][9] = 3;
+            map[8][7] = 3;
+            map[9][10] = 3;
+            map[9][8] = 3;
+            map[9][6] = 3;
+            map[10][9] = 3;
+            map[10][7] = 3;
+            map[11][8] = 3;
+
+            wormPos[currentWormLength++] = (Vector2) { 4, 8 };
+            wormPos[currentWormLength++] = (Vector2) { 5, 8 };
+            wormPos[currentWormLength++] = (Vector2) { 6, 8 };
+            break;
     }
 }
 
@@ -236,8 +287,12 @@ void drawVisual() {
     Vector2 portal = getPortal(currentLevel);
     BeginDrawing();
     ClearBackground(BLACK);
-    DrawText(TextFormat("Level %d", currentLevel), 25, 25, 30, WHITE);
-    DrawText(TextFormat("Press \"R\" to reset", currentLevel), 380, 1000, 30, WHITE);
+    if (currentLevel != 6) {
+        (TextFormat("Level %d", currentLevel), 25, 25, 30, WHITE);
+        DrawText(TextFormat("Press \"R\" to reset", currentLevel), 380, 1000, 30, WHITE);
+    } else {
+        DrawText(TextFormat("The End!"), 330, 460, 80, WHITE);
+    }
     for (int i = 0; i < mapReso; i++)
     for (int j = 0; j < mapReso; j++) {
         if (map[i][j] == 3) DrawCircle(j * squareReso + squareReso / 2, i * squareReso + squareReso / 2, squareReso / 2, RED);
