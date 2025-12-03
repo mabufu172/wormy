@@ -127,16 +127,16 @@ void loadMap(int level) {
     switch (level) {
         case 1:
             map[7][6] = 3;
-            map[7][13] = 5;
-            map[7][12] = 5;
-            map[7][11] = 5; 
-            map[7][10] = 5;
-            map[8][10] = 5;
-            map[9][10] = 5;
-            map[10][10] = 5;
-            map[10][9] = 5;
-            map[10][8] = 5;
-            map[10][7] = 5;
+            map[7][13] = 4;
+            map[7][12] = 4;
+            map[7][11] = 4; 
+            map[7][10] = 4;
+            map[8][10] = 4;
+            map[9][10] = 4;
+            map[10][10] = 4;
+            map[10][9] = 4;
+            map[10][8] = 4;
+            map[10][7] = 4;
             wormPos[currentWormLength++] = (Vector2) { 9, 7 };
             wormPos[currentWormLength++] = (Vector2) { 9, 6 };
             wormPos[currentWormLength++] = (Vector2) { 10, 6 };
@@ -144,55 +144,55 @@ void loadMap(int level) {
             break;
         case 2:
             map[7][9] = 3;
-            map[6][8] = 5;
-            map[6][9] = 5;
-            map[7][8] = 5;
-            map[10][11] = 5;
-            map[10][10] = 5;
-            map[10][9] = 5;
-            map[9][9] = 5;
-            map[9][8] = 5;
-            map[9][7] = 5;
-            map[9][6] = 5;
-            map[9][5] = 5;
-            map[9][4] = 5;
-            map[9][11] = 5;
-            map[8][11] = 5;
-            map[7][11] = 5;
-            map[6][11] = 5;
-            map[6][12] = 5;
-            map[6][13] = 5;
+            map[6][8] = 4;
+            map[6][9] = 4;
+            map[7][8] = 4;
+            map[10][11] = 4;
+            map[10][10] = 4;
+            map[10][9] = 4;
+            map[9][9] = 4;
+            map[9][8] = 4;
+            map[9][7] = 4;
+            map[9][6] = 4;
+            map[9][5] = 4;
+            map[9][4] = 4;
+            map[9][11] = 4;
+            map[8][11] = 4;
+            map[7][11] = 4;
+            map[6][11] = 4;
+            map[6][12] = 4;
+            map[6][13] = 4;
             wormPos[currentWormLength++] = (Vector2) { 8, 6 };
             wormPos[currentWormLength++] = (Vector2) { 8, 5 };
             wormPos[currentWormLength++] = (Vector2) { 8, 4 };
             headTexture = LoadTextureFromImage(headImageRight);
             break;
         case 3:
-            map[7][7] = 5;
-            map[7][6] = 5;
-            map[7][5] = 5;
-            map[8][6] = 5;
-            map[9][6] = 5;
-            map[10][6] = 5;
-            map[11][6] = 5;
-            map[11][7] = 5;
-            map[11][9] = 5;
-            map[7][10] = 5;
-            map[6][10] = 5;
-            map[5][10] = 5;
-            map[4][10] = 5;
-            map[8][9] = 5;
-            map[7][9] = 5;
-            map[6][9] = 5;
-            map[5][9] = 5;
-            map[4][9] = 5;
-            map[10][9] = 5;
-            map[10][10] = 5;
-            map[10][11] = 5;
-            map[10][12] = 5;
-            map[9][12] = 5;
-            map[8][12] = 5;
-            map[7][12] = 5;
+            map[7][7] = 4;
+            map[7][6] = 4;
+            map[7][5] = 4;
+            map[8][6] = 4;
+            map[9][6] = 4;
+            map[10][6] = 4;
+            map[11][6] = 4;
+            map[11][7] = 4;
+            map[11][9] = 4;
+            map[7][10] = 4;
+            map[6][10] = 4;
+            map[5][10] = 4;
+            map[4][10] = 4;
+            map[8][9] = 4;
+            map[7][9] = 4;
+            map[6][9] = 4;
+            map[5][9] = 4;
+            map[4][9] = 4;
+            map[10][9] = 4;
+            map[10][10] = 4;
+            map[10][11] = 4;
+            map[10][12] = 4;
+            map[9][12] = 4;
+            map[8][12] = 4;
+            map[7][12] = 4;
             map[10][8] = 3;
             wormPos[currentWormLength++] = (Vector2) { 6, 7 };
             wormPos[currentWormLength++] = (Vector2) { 6, 6 };
@@ -201,31 +201,31 @@ void loadMap(int level) {
             break;
         case 4:
             map[7][8] = 3;
-            map[7][10] = 5;
-            map[5][10] = 5;
-            map[5][9] = 5;
-            map[9][11] = 5;
-            map[9][12] = 5;
-            map[9][13] = 5;
-            map[9][14] = 5;
-            map[9][7] = 5;
-            map[9][7] = 5;
-            map[9][7] = 5;
-            map[7][6] = 5;
-            map[6][6] = 5;
-            map[5][6] = 5;
-            map[9][7] = 5;
-            map[9][6] = 5;
-            map[9][5] = 5;
-            map[9][4] = 5;
-            map[9][3] = 5;
+            map[7][10] = 4;
+            map[5][10] = 4;
+            map[5][9] = 4;
+            map[9][11] = 4;
+            map[9][12] = 4;
+            map[9][13] = 4;
+            map[9][14] = 4;
+            map[9][7] = 4;
+            map[9][7] = 4;
+            map[9][7] = 4;
+            map[7][6] = 4;
+            map[6][6] = 4;
+            map[5][6] = 4;
+            map[9][7] = 4;
+            map[9][6] = 4;
+            map[9][5] = 4;
+            map[9][4] = 4;
+            map[9][3] = 4;
             wormPos[currentWormLength++] = (Vector2) { 8, 6 };
             wormPos[currentWormLength++] = (Vector2) { 8, 5 };
             wormPos[currentWormLength++] = (Vector2) { 8, 4 };
             headTexture = LoadTextureFromImage(headImageRight);
             break;
         case 5:
-            map[7][8] = 5;
+            map[7][8] = 4;
             map[8][9] = 3;
             map[8][7] = 3;
             map[9][10] = 3;
@@ -265,17 +265,6 @@ void moveWorm() {
     else if (IsKeyPressed(KEY_S)) wormPos[0].x += 1;
 }
 
-Color getColorFromId(int id) {
-    switch(id) {
-        case 1: return GREEN;
-        case 2: return DARKGREEN;
-        case 3: return RED;
-        case 4: return GRAY;
-        case 5: return BROWN;
-    }
-    return PURPLE; // fallback
-}
-
 void drawVisual() {
     Vector2 portal = getPortal(currentLevel);
     BeginDrawing();
@@ -293,8 +282,7 @@ void drawVisual() {
             case 1: DrawRectangle(j * squareReso, i * squareReso, squareReso, squareReso, WHITE);
             case 2: DrawTexture(headTexture, j * squareReso, i * squareReso, WHITE); break;
             case 3: DrawTexture(appleTexture, j * squareReso, i * squareReso, WHITE); break;
-            case 5: DrawTexture(blockTexture, j * squareReso, i * squareReso, WHITE); break;
-            default: DrawRectangle(j * squareReso, i * squareReso, squareReso, squareReso, getColorFromId(map[i][j]));
+            case 4: DrawTexture(blockTexture, j * squareReso, i * squareReso, WHITE); break;
         }
         // render portal (above map)
         if (i == portal.x && j == portal.y) DrawTexture(portalTexture, j * squareReso, i * squareReso, WHITE); 
