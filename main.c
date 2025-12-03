@@ -43,6 +43,15 @@ Vector2 getPortal(int map) {
     }
 }
 
+Texture2D getTextureFromId(int id) {
+    switch(id) {
+        case 2: return headTexture;
+        case 3: return appleTexture;
+        case 4: return blockTexture;
+        default: return appleTexture;
+    }
+}
+
 bool checkCollision(Vector2 positionInMap, int direction, bool ignoreWorm) {
     
     // setting num to two causes it to ignore worm as worm IDs are 2 and 3 (head and body)
@@ -277,13 +286,8 @@ void drawVisual() {
     }
     for (int i = 0; i < mapReso; i++)
     for (int j = 0; j < mapReso; j++) {
-        switch (map[i][j]) {
-            case 0: break;
-            case 1: DrawRectangle(j * squareReso, i * squareReso, squareReso, squareReso, WHITE);
-            case 2: DrawTexture(headTexture, j * squareReso, i * squareReso, WHITE); break;
-            case 3: DrawTexture(appleTexture, j * squareReso, i * squareReso, WHITE); break;
-            case 4: DrawTexture(blockTexture, j * squareReso, i * squareReso, WHITE); break;
-        }
+        if (map[i][j] == 1) DrawRectangle(j * squareReso, i * squareReso, squareReso, squareReso, WHITE);
+        if (map[i][j] != 0) DrawTexture(getTextureFromId(map[i][j]), j * squareReso, i * squareReso, WHITE);
         // render portal (above map)
         if (i == portal.x && j == portal.y) DrawTexture(portalTexture, j * squareReso, i * squareReso, WHITE); 
     }
