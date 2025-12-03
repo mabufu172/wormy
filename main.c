@@ -303,16 +303,14 @@ void gameLoop() {
     if (IsKeyPressed(KEY_R)) resetState();
 
     if (shouldFall){
-
         for (int i = 0; i < currentWormLength; i++) {
             map[(int) wormPos[i].x][(int) wormPos[i].y] = 0;
             wormPos[i].x += 1;
         }
-
+        
         drawSnakeToMap();
         updateHeadCollisionState();
         checkShouldFall();
-
     }
 
     else if (canMove() || isGoingToEatApple()) {
