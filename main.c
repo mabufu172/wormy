@@ -7,7 +7,7 @@ const char gameName[] = "wormy";
 const int squareReso = 60;
 const int screenWidth = 1080;
 const int screenHeight = 1080;
-const int mapReso = screenWidth / squareReso;
+const int mapReso = 18; // screenWidth / squareReso;
 const int voidYLevel = 19;
 
 int map[20][18]; //1080 / square reso, 20 is to allow worm to fall beyond map
