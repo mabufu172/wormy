@@ -363,7 +363,7 @@ void loadSprites() {
     portalImage = LoadImage("sprites/portal.png");
     blockImage = LoadImage("sprites/block.png");
     headImageRight = LoadImage("sprites/head.png");
-    
+
     ImageResizeNN(&headImageRight, 60, 60);
     ImageResizeNN(&blockImage, 60, 60);
     ImageResizeNN(&portalImage, 60, 60);
@@ -382,14 +382,13 @@ void loadSprites() {
     blockTexture = LoadTextureFromImage(blockImage);
     appleTexture = LoadTextureFromImage(appleImage);
     portalTexture = LoadTextureFromImage(portalImage);
-}
 
-void unloadSprites() {
-    // not used anymore, i know.
     UnloadImage(portalImage);
     UnloadImage(appleImage);
     UnloadImage(blockImage);
+}
 
+void unloadSprites() {
     UnloadTexture(headTexture);
     UnloadTexture(blockTexture);
     UnloadTexture(portalTexture);
