@@ -21,6 +21,15 @@ bool shouldFall;
 Vector2 wormPos[30]; // max worm length is 30
 Vector2 tailPos;
 
+Image headImageDown;
+Image headImageLeft;
+Image headImageUp;
+Image headImageRight;
+Texture2D headTexture;
+Texture2D appleTexture;
+Texture2D portalTexture;
+Texture2D blockTexture;
+
 Vector2 getPortal(int map) {
     switch (map) {
         case 1: return (Vector2) { 3, 13 };
@@ -75,6 +84,20 @@ bool isGoingToEatApple() {
 
     return false;
 }
+
+void updateFacing() {
+    if (IsKeyPressed(KEY_A)) headTexture = LoadTextureFromImage(headImageLeft);
+    else if (IsKeyPressed(KEY_D)) headTexture = LoadTextureFromImage(headImageRight);
+    else if (IsKeyPressed(KEY_W)) headTexture = LoadTextureFromImage(headImageUp);
+    else if (IsKeyPressed(KEY_S)) headTexture = LoadTextureFromImage(headImageDown);
+}
+
+// void updateModelFromCurrentFacing(int facing) {
+//     if (facing == 1) headTexture = LoadTextureFromImage(headImageLeft);
+//     else if (facing == 2) headTexture = LoadTextureFromImage(headImageRight);
+//     else if (facing == 3) headTexture = LoadTextureFromImage(headImageUp);
+//     else if (facing == 4) headTexture = LoadTextureFromImage(headImageDown);
+// }
 
 void updateHeadCollisionState() {
     for (int i = 0; i < 4; i++)
@@ -295,11 +318,16 @@ void drawVisual() {
     }
     for (int i = 0; i < mapReso; i++)
     for (int j = 0; j < mapReso; j++) {
-        if (map[i][j] == 3) DrawCircle(j * squareReso + squareReso / 2, i * squareReso + squareReso / 2, squareReso / 2, RED);
-        else if (map[i][j] > 0) DrawRectangle(j * squareReso, i * squareReso, squareReso, squareReso, getColorFromId(map[i][j]));
-
+        switch (map[i][j]) {
+            case 0: break;
+            case 1: DrawRectangle(j * squareReso, i * squareReso, squareReso, squareReso, WHITE);
+            case 2: DrawTexture(headTexture, j * squareReso, i * squareReso, WHITE); break;
+            case 3: DrawTexture(appleTexture, j * squareReso, i * squareReso, WHITE); break;
+            case 5: DrawTexture(blockTexture, j * squareReso, i * squareReso, WHITE); break;
+            default: DrawRectangle(j * squareReso, i * squareReso, squareReso, squareReso, getColorFromId(map[i][j]));
+        }
         // render portal (above map)
-        if (i == portal.x && j == portal.y) DrawCircle(j * squareReso + squareReso / 2, i * squareReso + squareReso / 2, squareReso / 2, PURPLE);
+        if (i == portal.x && j == portal.y) DrawTexture(portalTexture, j * squareReso, i * squareReso, WHITE); 
     }
     EndDrawing();
 }
@@ -326,6 +354,8 @@ void gameLoop() {
     }
 
     else if (canMove() || isGoingToEatApple()) {
+
+        updateFacing();
 
         // tailPos gets updated to the last worm segment
         tailPos = wormPos[currentWormLength - 1];
@@ -356,9 +386,37 @@ void gameLoop() {
 }
 
 int main() {
+    Image appleImage = LoadImage("sprites/apple.png");
+    Image portalImage = LoadImage("sprites/portal.png");
+    Image blockImage = LoadImage("sprites/block.png");
+    headImageRight = LoadImage("sprites/head.png");
+    
+    ImageResizeNN(&headImageRight, 60, 60);
+    ImageResizeNN(&blockImage, 60, 60);
+    ImageResizeNN(&portalImage, 60, 60);
+    ImageResizeNN(&appleImage, 60, 60);
+
+    headImageDown = ImageCopy(headImageRight);
+    headImageLeft = ImageCopy(headImageRight);
+    headImageUp = ImageCopy(headImageRight);
+
+    ImageRotateCW(&headImageDown);
+    ImageRotateCW(&headImageLeft);
+    ImageRotateCW(&headImageLeft);
+    ImageRotateCCW(&headImageUp);
+
     InitWindow(screenWidth, screenHeight, gameName);
     SetTargetFPS(60);
     HideCursor();
+
+    headTexture = LoadTextureFromImage(headImageLeft);
+    blockTexture = LoadTextureFromImage(blockImage);
+    appleTexture = LoadTextureFromImage(appleImage);
+    portalTexture = LoadTextureFromImage(portalImage);
+    UnloadImage(portalImage);
+    UnloadImage(appleImage);
+    UnloadImage(blockImage);
+
     //ToggleFullscreen();
 
     // always draw intial worm state in the very beginning
@@ -368,6 +426,14 @@ int main() {
 
     while (!WindowShouldClose()) gameLoop();
 
+    UnloadTexture(headTexture);
+    UnloadTexture(blockTexture);
+    UnloadTexture(portalTexture);
+    UnloadTexture(appleTexture);
+    UnloadImage(headImageRight);
+    UnloadImage(headImageLeft);
+    UnloadImage(headImageUp);
+    UnloadImage(headImageDown);
     CloseWindow();
 
     return 0;
